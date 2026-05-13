@@ -14,6 +14,7 @@ export class AppComponent {
   nav = [
     { label: 'Inicio', path: '/' },
     { label: 'Publicaciones', path: '/publicaciones' },
+    { label: 'Indicadores', path: '/indicadores' },
     { label: 'Directorio', path: '/directorio' },
     { label: 'Eventos', path: '/eventos' },
     { label: 'Noticias', path: '/noticias' },

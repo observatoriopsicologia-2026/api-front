@@ -1,0 +1,158 @@
+<section class="page-hero compact">
+  <span class="eyebrow">Datos e indicadores</span>
+  <h1>Analitica POT</h1>
+  <p>Visualiza tableros dinamicos sobre publicaciones, investigadores, eventos y actividad del observatorio.</p>
+</section>
+
+<section class="content-band analytics-layout">
+  <div class="section-heading">
+    <div>
+      <h2>Tablero del observatorio</h2>
+      <p>Indicadores consolidados desde la base de datos del proyecto.</p>
+    </div>
+  </div>
+
+  <p class="state-message" *ngIf="loading">Cargando indicadores...</p>
+  <p class="state-message error" *ngIf="error">{{ error }}</p>
+
+  <ng-container *ngIf="!loading && analytics as data">
+    <div class="metric-grid">
+      <article class="metric-card">
+        <span>Publicaciones</span>
+        <strong>{{ data.summary.publications }}</strong>
+        <small>{{ data.summary.publications_with_pdf }} con PDF</small>
+      </article>
+      <article class="metric-card">
+        <span>Investigadores</span>
+        <strong>{{ data.summary.researchers }}</strong>
+        <small>{{ data.summary.countries }} paises registrados</small>
+      </article>
+      <article class="metric-card">
+        <span>Eventos</span>
+        <strong>{{ data.summary.events }}</strong>
+        <small>Agenda academica</small>
+      </article>
+      <article class="metric-card">
+        <span>Noticias</span>
+        <strong>{{ data.summary.news }}</strong>
+        <small>Novedades publicadas</small>
+      </article>
+      <article class="metric-card">
+        <span>Recursos</span>
+        <strong>{{ data.summary.resources }}</strong>
+        <small>Material de apoyo</small>
+      </article>
+    </div>
+
+    <div class="analytics-grid">
+      <article class="chart-panel wide" *ngIf="data.publications_by_year.length">
+        <h3>Publicaciones por ano</h3>
+        <div class="vertical-chart">
+          <div class="vertical-item" *ngFor="let point of data.publications_by_year">
+            <span class="vertical-value">{{ point.value }}</span>
+            <span class="vertical-bar" [style.height.%]="barHeight(point, data.publications_by_year)"></span>
+            <small>{{ point.label }}</small>
+          </div>
+        </div>
+      </article>
+
+      <article class="chart-panel" *ngIf="data.publications_by_country.length">
+        <h3>Publicaciones por pais</h3>
+        <div class="ranking-list">
+          <div class="ranking-row" *ngFor="let point of data.publications_by_country">
+            <div>
+              <span>{{ point.label }}</span>
+              <strong>{{ point.value }}</strong>
+            </div>
+            <span class="ranking-track">
+              <span [style.width.%]="barWidth(point, data.publications_by_country)"></span>
+            </span>
+          </div>
+        </div>
+      </article>
+
+      <article class="chart-panel" *ngIf="data.publications_by_tag.length">
+        <h3>Temas frecuentes</h3>
+        <div class="tag-cloud">
+          <span *ngFor="let point of data.publications_by_tag">{{ point.label }} <strong>{{ point.value }}</strong></span>
+        </div>
+      </article>
+
+      <article class="chart-panel" *ngIf="data.researchers_by_country.length">
+        <h3>Investigadores por pais</h3>
+        <div class="ranking-list">
+          <div class="ranking-row" *ngFor="let point of data.researchers_by_country">
+            <div>
+              <span>{{ point.label }}</span>
+              <strong>{{ point.value }}</strong>
+            </div>
+            <span class="ranking-track green-track">
+              <span [style.width.%]="barWidth(point, data.researchers_by_country)"></span>
+            </span>
+          </div>
+        </div>
+      </article>
+
+      <article class="chart-panel" *ngIf="data.events_by_modality.length">
+        <h3>Eventos por modalidad</h3>
+        <div class="donut-list">
+          <span *ngFor="let point of data.events_by_modality">
+            <strong>{{ point.value }}</strong>
+            {{ point.label }}
+          </span>
+        </div>
+      </article>
+
+      <article class="chart-panel" *ngIf="data.resources_by_type.length">
+        <h3>Recursos por tipo</h3>
+        <div class="ranking-list compact">
+          <div class="ranking-row" *ngFor="let point of data.resources_by_type">
+            <div>
+              <span>{{ point.label }}</span>
+              <strong>{{ point.value }}</strong>
+            </div>
+            <span class="ranking-track yellow-track">
+              <span [style.width.%]="barWidth(point, data.resources_by_type)"></span>
+            </span>
+          </div>
+        </div>
+      </article>
+
+      <article class="chart-panel wide" *ngIf="data.latest_publications.length">
+        <h3>Publicaciones recientes</h3>
+        <div class="latest-list">
+          <div *ngFor="let item of data.latest_publications">
+            <strong>{{ item.title }}</strong>
+            <span>{{ item.authors || 'Autores por registrar' }} · {{ item.country || 'Pais por registrar' }} · {{ item.year || 'Ano por registrar' }}</span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <small class="chart-caption">Ultima actualizacion: {{ data.generated_at | date: 'd MMMM y, h:mm a' }}</small>
+  </ng-container>
+
+  <section class="powerbi-section">
+    <div class="section-heading">
+      <div>
+        <h2>Power BI</h2>
+        <p>Este espacio queda listo para insertar el reporte oficial cuando este publicado.</p>
+      </div>
+    </div>
+
+    <div class="powerbi-frame" *ngIf="safeReportUrl; else pendingDashboard">
+      <iframe
+        [src]="safeReportUrl"
+        title="Tablero Power BI del Observatorio POT"
+        allowfullscreen="true"
+      ></iframe>
+    </div>
+  </section>
+
+  <ng-template #pendingDashboard>
+    <div class="dashboard-placeholder">
+      <strong>Power BI pendiente de configuracion</strong>
+      <p>Power BI puede usar la URL publica <code>/api/analytics/powerbi</code> como fuente plana de datos. Cuando tengas el enlace embebido del reporte, se agrega en la configuracion del sitio.</p>
+    </div>
+  </ng-template>
+</section>

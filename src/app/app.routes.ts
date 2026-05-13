@@ -1,55 +1,43 @@
-import { Routes } from '@angular/router';
-import { AdminDashboardComponent } from './features/admin-dashboard.component';
-import { CollectionPageComponent } from './features/collection-page.component';
-import { HomeComponent } from './features/home.component';
-import { LoginComponent } from './features/login.component';
-import { PublicationsComponent } from './features/publications.component';
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AuthService } from './core/auth.service';
 
-export const routes: Routes = [
-  { path: '', component: HomeComponent, title: 'Inicio | Observatorio POT' },
-  { path: 'publicaciones', component: PublicationsComponent, title: 'Publicaciones | Observatorio POT' },
-  {
-    path: 'directorio',
-    component: CollectionPageComponent,
-    title: 'Directorio | Observatorio POT',
-    data: {
-      key: 'researchers',
-      title: 'Directorio de investigadores',
-      subtitle: 'Conecta con investigadores y profesionales de Psicología Organizacional y del Trabajo.'
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, RouterOutlet],
+  templateUrl: './app.component.html'
+})
+export class AppComponent {
+  nav = [
+    { label: 'Inicio', path: '/' },
+    { label: 'Publicaciones', path: '/publicaciones' },
+    { label: 'Indicadores', path: '/indicadores' },
+    { label: 'Directorio', path: '/directorio' },
+    { label: 'Eventos', path: '/eventos' },
+    { label: 'Noticias', path: '/noticias' },
+    { label: 'Recursos', path: '/recursos' }
+  ];
+
+  menuOpen = false;
+  searchOpen = false;
+  searchTerm = '';
+
+  constructor(
+    public readonly auth: AuthService,
+    private readonly router: Router
+  ) {}
+
+  search() {
+    const q = this.searchTerm.trim();
+    if (!q) {
+      return;
     }
-  },
-  {
-    path: 'eventos',
-    component: CollectionPageComponent,
-    title: 'Eventos | Observatorio POT',
-    data: {
-      key: 'events',
-      title: 'Eventos académicos',
-      subtitle: 'Congresos, seminarios, webinars y encuentros de la red iberoamericana.'
-    }
-  },
-  {
-    path: 'noticias',
-    component: CollectionPageComponent,
-    title: 'Noticias | Observatorio POT',
-    data: {
-      key: 'news',
-      title: 'Noticias y novedades',
-      subtitle: 'Actualidad, convocatorias y avances relevantes para la comunidad POT.'
-    }
-  },
-  {
-    path: 'recursos',
-    component: CollectionPageComponent,
-    title: 'Recursos | Observatorio POT',
-    data: {
-      key: 'resources',
-      title: 'Recursos',
-      subtitle: 'Materiales, enlaces, repositorios y herramientas para investigación y práctica profesional.'
-    }
-  },
-  { path: 'admin/login', component: LoginComponent, title: 'Acceso admin | Observatorio POT' },
-  { path: 'admin', component: AdminDashboardComponent, title: 'Panel admin | Observatorio POT' },
-  { path: '**', redirectTo: '' }
-];
+    this.searchOpen = false;
+    this.menuOpen = false;
+    this.router.navigate(['/publicaciones'], { queryParams: { q } });
+  }
+}
 
