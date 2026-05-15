@@ -183,11 +183,74 @@
               <textarea name="resourceDescription" [(ngModel)]="draft['description']" rows="4"></textarea>
             </label>
           </ng-container>
+
+          <ng-container *ngSwitchCase="'dataset'">
+            <label class="span-2">
+              <span>Titulo del documento</span>
+              <input name="datasetTitle" [(ngModel)]="draft['title']" required>
+            </label>
+            <label>
+              <span>Autor / institucion</span>
+              <input name="datasetAuthor" [(ngModel)]="draft['author']">
+            </label>
+            <label>
+              <span>Fecha</span>
+              <input name="datasetDate" [(ngModel)]="draft['publication_date']" type="date">
+            </label>
+            <label>
+              <span>Ano</span>
+              <input name="datasetYear" [(ngModel)]="draft['year']" type="number">
+            </label>
+            <label>
+              <span>Idioma</span>
+              <input name="datasetLanguage" [(ngModel)]="draft['language']" placeholder="en, es, fr">
+            </label>
+            <label>
+              <span>Fuente</span>
+              <select name="datasetSource" [(ngModel)]="draft['source_org']">
+                <option>ILO</option>
+                <option>UN</option>
+                <option>Manual</option>
+              </select>
+            </label>
+            <label>
+              <span>Tipo documental</span>
+              <input name="datasetType" [(ngModel)]="draft['document_type']" placeholder="Informe, resolucion, guia">
+            </label>
+            <label>
+              <span>Tematica</span>
+              <input name="datasetTopic" [(ngModel)]="draft['topic']" placeholder="occupational health">
+            </label>
+            <label>
+              <span>Tanda</span>
+              <input name="datasetBatch" [(ngModel)]="draft['batch']" placeholder="Tanda 1">
+            </label>
+            <label class="span-2">
+              <span>URL fuente</span>
+              <input name="datasetUrl" [(ngModel)]="draft['source_url']" type="url">
+            </label>
+            <label class="span-2">
+              <span>Archivo local del dataset</span>
+              <input name="datasetFile" [(ngModel)]="draft['local_file']">
+            </label>
+            <label class="span-2">
+              <span>Texto extraido</span>
+              <textarea name="datasetText" [(ngModel)]="draft['extracted_text']" rows="4"></textarea>
+            </label>
+            <label class="span-2">
+              <span>Notas o ajuste manual para indicadores</span>
+              <textarea name="datasetNotes" [(ngModel)]="draft['manual_notes']" rows="3"></textarea>
+            </label>
+          </ng-container>
         </ng-container>
 
-        <label class="check-row span-2">
+        <label class="check-row span-2" *ngIf="selected.key !== 'dataset'">
           <input name="featured" [(ngModel)]="draft['is_featured']" type="checkbox">
           <span>Destacar en el inicio</span>
+        </label>
+        <label class="check-row span-2" *ngIf="selected.key === 'dataset'">
+          <input name="datasetVisible" [(ngModel)]="draft['is_visible']" type="checkbox">
+          <span>Incluir en indicadores y Power BI</span>
         </label>
 
         <p class="state-message error span-2" *ngIf="error">{{ error }}</p>

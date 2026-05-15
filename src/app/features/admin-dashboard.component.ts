@@ -48,6 +48,11 @@ export class AdminDashboardComponent implements OnInit {
       key: 'resources',
       label: 'Recursos',
       description: 'Enlaces, materiales, herramientas y repositorios externos.'
+    },
+    {
+      key: 'dataset',
+      label: 'Dataset',
+      description: 'Metadatos documentales editables para indicadores y Power BI.'
     }
   ];
 
@@ -136,8 +141,9 @@ export class AdminDashboardComponent implements OnInit {
 
     request.pipe(finalize(() => (this.saving = false))).subscribe({
       next: () => {
-        this.success = this.editingId ? 'Registro actualizado.' : 'Registro creado.';
+        const message = this.editingId ? 'Registro actualizado.' : 'Registro creado.';
         this.resetDraft();
+        this.success = message;
         this.load();
       },
       error: () => (this.error = 'No pudimos guardar. Revisa los campos obligatorios y la sesión.')
@@ -192,6 +198,9 @@ export class AdminDashboardComponent implements OnInit {
     }
     if (this.selected.key === 'news') {
       return this.formatDate(item['published_at']);
+    }
+    if (this.selected.key === 'dataset') {
+      return [item['topic'], item['source_org'], item['year'], item['document_type']].filter(Boolean).join(' - ');
     }
     return [item['type'], Array.isArray(item['tags']) ? item['tags'].join(', ') : ''].filter(Boolean).join(' · ');
   }
@@ -249,13 +258,31 @@ export class AdminDashboardComponent implements OnInit {
         published_at: ''
       };
     }
+    if (key === 'resources') {
+      return {
+        ...common,
+        title: '',
+        description: '',
+        type: 'Enlace',
+        url: '',
+        tags: ''
+      };
+    }
     return {
-      ...common,
       title: '',
-      description: '',
-      type: 'Enlace',
-      url: '',
-      tags: ''
+      author: '',
+      publication_date: '',
+      year: '',
+      language: '',
+      document_type: 'Documento',
+      source_org: 'ILO',
+      topic: '',
+      batch: '',
+      source_url: '',
+      local_file: '',
+      extracted_text: '',
+      manual_notes: '',
+      is_visible: true
     };
   }
 
@@ -266,7 +293,7 @@ export class AdminDashboardComponent implements OnInit {
         prepared[key] = value.join(', ');
       } else if (key === 'starts_at' && value) {
         prepared[key] = this.toDateTimeLocal(String(value));
-      } else if (key === 'published_at' && value) {
+      } else if ((key === 'published_at' || key === 'publication_date') && value) {
         prepared[key] = String(value).slice(0, 10);
       } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || value === null) {
         prepared[key] = value;
