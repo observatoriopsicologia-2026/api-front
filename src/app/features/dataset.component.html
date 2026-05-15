@@ -1,0 +1,140 @@
+<section class="page-hero compact">
+  <span class="eyebrow">Dataset documental</span>
+  <h1>Observatorio basado en datos</h1>
+  <p>Consulta y analiza documentos ILO y UN sobre salud ocupacional, bienestar laboral, salud mental y riesgos psicosociales.</p>
+</section>
+
+<section class="content-band analytics-layout">
+  <p class="state-message" *ngIf="loading">Cargando dataset...</p>
+  <p class="state-message error" *ngIf="error">{{ error }}</p>
+
+  <ng-container *ngIf="analytics as data">
+    <div class="metric-grid">
+      <article class="metric-card">
+        <span>Documentos</span>
+        <strong>{{ data.summary.documents }}</strong>
+        <small>{{ data.summary.visible_documents }} visibles</small>
+      </article>
+      <article class="metric-card">
+        <span>Tematicas</span>
+        <strong>{{ data.summary.topics }}</strong>
+        <small>Lineas documentales</small>
+      </article>
+      <article class="metric-card">
+        <span>Fuentes</span>
+        <strong>{{ data.summary.sources }}</strong>
+        <small>Organismos base</small>
+      </article>
+      <article class="metric-card">
+        <span>Años</span>
+        <strong>{{ data.summary.years }}</strong>
+        <small>Cobertura temporal</small>
+      </article>
+    </div>
+
+  </ng-container>
+
+  <section class="chart-panel wide pivot-panel">
+    <div class="section-heading">
+      <div>
+        <h2>Reporte interactivo del dataset</h2>
+        <p>Visualizacion de Power BI con tablas, filtros y graficas del dataset documental.</p>
+      </div>
+    </div>
+
+    <div class="powerbi-frame dataset-powerbi-frame" *ngIf="safeReportUrl; else datasetPowerBiPending">
+      <iframe [src]="safeReportUrl" title="Power BI dataset Observatorio POT" allowfullscreen="true"></iframe>
+    </div>
+  </section>
+
+  <ng-template #datasetPowerBiPending>
+    <div class="dashboard-placeholder">
+      <strong>Reporte pendiente de publicacion</strong>
+      <p>Publica el reporte en Power BI y pega su enlace embebido en <code>datasetPowerBiReportUrl</code>.</p>
+    </div>
+  </ng-template>
+
+  <form class="toolbar" (ngSubmit)="search()">
+    <label>
+      <span>Buscar en el dataset</span>
+      <input name="q" [(ngModel)]="q" placeholder="salud mental, teletrabajo, bienestar">
+    </label>
+    <label>
+      <span>Tematica</span>
+      <input name="topic" [(ngModel)]="topic" placeholder="Filtrar por tematica">
+    </label>
+    <button class="primary-button" type="submit">Buscar</button>
+    <button class="outline-button" type="button" (click)="q = ''; topic = ''; search()">Limpiar</button>
+  </form>
+
+  <div class="dataset-list">
+    <article class="dataset-card" *ngFor="let document of documents">
+      <div>
+        <span class="pill">{{ document.source_org || 'Fuente' }}</span>
+        <h2>{{ document.title }}</h2>
+        <p>{{ document.author || 'Autor por registrar' }}</p>
+        <small>{{ document.topic || 'Sin tematica' }} · {{ document.year || 'Sin año' }} · {{ document.document_type }}</small>
+      </div>
+      <a class="outline-button" *ngIf="document.source_url" [href]="document.source_url" target="_blank" rel="noreferrer">Fuente</a>
+    </article>
+  </div>
+
+  <ng-container *ngIf="analytics as data">
+      <div #analyticsSection class="analytics-grid">
+      <article class="chart-panel wide" *ngIf="data.documents_by_year.length">
+        <h3>Documentos por año</h3>
+        <div class="vertical-chart">
+          <div class="vertical-item" *ngFor="let point of data.documents_by_year">
+            <span class="vertical-value">{{ point.value }}</span>
+            <span class="vertical-bar orange-bar" [style.height.%]="barHeight(point, data.documents_by_year)"></span>
+            <small>{{ point.label }}</small>
+          </div>
+        </div>
+      </article>
+
+      <article class="chart-panel" *ngIf="data.documents_by_topic.length">
+        <h3>Documentos por tematica</h3>
+        <div class="ranking-list">
+          <button class="ranking-row as-filter" type="button" *ngFor="let point of data.documents_by_topic" (click)="topic = point.label; search()">
+            <div>
+              <span>{{ point.label }}</span>
+              <strong>{{ point.value }}</strong>
+            </div>
+            <span class="ranking-track"><span [style.width.%]="barWidth(point, data.documents_by_topic)"></span></span>
+          </button>
+        </div>
+      </article>
+
+      <article class="chart-panel" *ngIf="data.documents_by_source.length">
+        <h3>Documentos por fuente</h3>
+        <div class="donut-list">
+          <span *ngFor="let point of data.documents_by_source"><strong>{{ point.value }}</strong> {{ point.label }}</span>
+        </div>
+      </article>
+
+      <article class="chart-panel" *ngIf="data.documents_by_language.length">
+        <h3>Idiomas detectados</h3>
+        <div class="tag-cloud">
+          <span *ngFor="let point of data.documents_by_language">{{ point.label }} <strong>{{ point.value }}</strong></span>
+        </div>
+      </article>
+
+      <article class="chart-panel" *ngIf="data.documents_by_type.length">
+        <h3>Tipo documental</h3>
+        <div class="ranking-list compact">
+          <div class="ranking-row" *ngFor="let point of data.documents_by_type">
+            <div>
+              <span>{{ point.label }}</span>
+              <strong>{{ point.value }}</strong>
+            </div>
+            <span class="ranking-track yellow-track"><span [style.width.%]="barWidth(point, data.documents_by_type)"></span></span>
+          </div>
+        </div>
+      </article>
+    </div>
+</ng-container>
+
+<button class="scroll-bottom-btn" (click)="toggleScroll()">
+  {{ isAtBottom ? '↑' : '↓' }}
+</button>
+</section>
