@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { finalize } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.js';
 import { ApiService } from '../core/api.service';
 import { AnalyticsPoint, AnalyticsResponse } from '../core/models';
 
