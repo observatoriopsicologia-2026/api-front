@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { ApiService } from '../core/api.service';
@@ -36,6 +36,8 @@ export class DatasetComponent implements OnInit {
   topicChart: BarData = { datasets: [] };
   yearChart: BarData = { datasets: [] };
   typeChart: BarData = { datasets: [] };
+  @ViewChild('analyticsSection') analyticsSection?: ElementRef<HTMLElement>;
+  isAtBottom = false;
 
   constructor(private readonly api: ApiService) {}
   ngOnInit(): void { this.load(); }
@@ -95,4 +97,17 @@ export class DatasetComponent implements OnInit {
   get pageCount() { return Math.max(1, Math.ceil(this.documents.length / this.pageSize)); }
   get pageDocuments() { return this.documents.slice((this.page - 1) * this.pageSize, this.page * this.pageSize); }
   get filteredYears() { return new Set(this.documents.filter((row) => row.year).map((row) => row.year)).size; }
+
+  toggleScroll(): void {
+    if (this.isAtBottom) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      this.analyticsSection?.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  @HostListener('window:scroll')
+  onScroll(): void {
+    this.isAtBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 120;
+  }
 }

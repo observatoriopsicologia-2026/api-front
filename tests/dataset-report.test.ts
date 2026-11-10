@@ -113,6 +113,36 @@ test('matrix covers empty values, zero cells, tie ordering and special object pr
   assert.deepEqual(datasetMatrix([], 'topic', 'source_org'), { columns: [], rows: [] });
 });
 
+test('dataset preserves navigation to the report and back to the top', () => {
+  const component = create();
+  let top: unknown;
+  let report: unknown;
+  const originalWindow = Object.getOwnPropertyDescriptor(globalThis, 'window');
+  const originalDocument = Object.getOwnPropertyDescriptor(globalThis, 'document');
+  Object.defineProperty(globalThis, 'window', { configurable: true, value: {
+    innerHeight: 800, scrollY: 0, scrollTo: (options: unknown) => { top = options; }
+  } });
+  Object.defineProperty(globalThis, 'document', { configurable: true, value: { body: { offsetHeight: 2000 } } });
+  try {
+    component.toggleScroll();
+    component.analyticsSection = { nativeElement: { scrollIntoView: (options: unknown) => { report = options; } } } as never;
+    component.onScroll();
+    assert.equal(component.isAtBottom, false);
+    component.toggleScroll();
+    assert.deepEqual(report, { behavior: 'smooth', block: 'start' });
+    window.scrollY = 1200;
+    component.onScroll();
+    assert.equal(component.isAtBottom, true);
+    component.toggleScroll();
+    assert.deepEqual(top, { top: 0, behavior: 'smooth' });
+  } finally {
+    if (originalWindow) Object.defineProperty(globalThis, 'window', originalWindow);
+    else Reflect.deleteProperty(globalThis, 'window');
+    if (originalDocument) Object.defineProperty(globalThis, 'document', originalDocument);
+    else Reflect.deleteProperty(globalThis, 'document');
+  }
+});
+
 test('bar settings and lifecycle update and dispose charts, and clicks emit a category', () => {
   assert.equal(barOptions(true, true).indexAxis, 'y');
   assert.equal(barOptions(false, false).indexAxis, 'x');

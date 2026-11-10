@@ -3,7 +3,7 @@
   <h1>Observatorio basado en datos</h1>
   <p>Salud ocupacional, bienestar laboral, salud mental y riesgos psicosociales.</p>
 </section>
-<section class="content-band report-layout" aria-label="Reporte interactivo del dataset">
+<section #analyticsSection class="content-band report-layout" aria-label="Reporte interactivo del dataset">
   <div class="report-heading"><h2>Reporte interactivo del dataset</h2><button type="button" class="outline-button" (click)="load()" [disabled]="loading">Actualizar</button></div>
   <p class="state-message" *ngIf="loading" role="status">Cargando dataset...</p>
   <p class="state-message error" *ngIf="error" role="alert">{{ error }}</p>
@@ -46,3 +46,8 @@
     <nav class="report-pagination" aria-label="Paginas de documentos" *ngIf="documents.length"><button class="outline-button" type="button" [disabled]="page === 1" (click)="page = page - 1">Anterior</button><span>Pagina {{ page }} de {{ pageCount }}</span><button class="outline-button" type="button" [disabled]="page === pageCount" (click)="page = page + 1">Siguiente</button></nav>
   </ng-container>
 </section>
+<button type="button" class="scroll-bottom-btn" (click)="toggleScroll()"
+  [attr.aria-label]="isAtBottom ? 'Ir al inicio' : 'Ir al reporte'"
+  [title]="isAtBottom ? 'Ir al inicio' : 'Ir al reporte'">
+  {{ isAtBottom ? '↑' : '↓' }}
+</button>

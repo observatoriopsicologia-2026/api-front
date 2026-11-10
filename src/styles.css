@@ -73,11 +73,11 @@ main {
   border-radius: 50%;
   color: var(--blue-900);
   display: inline-flex;
-  font-size: 0.72rem;
-  font-weight: 800;
-  height: 38px;
+  font-size: 1rem;
+  font-weight: 900;
+  height: 48px;
   justify-content: center;
-  width: 38px;
+  width: 48px;
 }
 
 .brand strong,
@@ -102,7 +102,7 @@ main {
 .main-nav a {
   border-bottom: 2px solid transparent;
   color: rgba(255, 255, 255, 0.82);
-  font-size: 0.88rem;
+  font-size: 1.2rem;
   padding: 26px 0 23px;
 }
 
@@ -189,7 +189,10 @@ main {
   white-space: nowrap;
 }
 
-.access-button,
+.access-button{
+  background: #1b4e81;
+  color: #fff;
+}
 .primary-button {
   background: var(--orange);
   color: #fff;
@@ -804,7 +807,9 @@ textarea {
 .metric-grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+
+  grid-template-columns: repeat(auto-fit, minmax(220px, max-content));
+  justify-content: center;
 }
 
 .metric-card,
@@ -1544,5 +1549,59 @@ textarea {
   .section-heading {
     align-items: start;
     flex-direction: column;
+  }
+}
+
+.scroll-bottom-btn {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+
+  width: 56px;
+  height: 56px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #e97430;
+  color: white;
+
+  font-size: 24px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+  z-index: 1000;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.scroll-bottom-btn:hover {
+  background: #f37b36;
+  transform: scale(1.08);
+}
+
+.scroll-bottom-btn:active {
+  transform: scale(0.95);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .scroll-bottom-btn {
+    width: 48px;
+    height: 48px;
+
+    right: 16px;
+    bottom: 16px;
+
+    font-size: 20px;
   }
 }
