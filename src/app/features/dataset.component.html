@@ -40,7 +40,17 @@
     </div>
     <div class="report-heading"><h2>Documentos</h2><span>{{ documents.length }} resultados</span></div>
     <div class="dataset-list"><article class="dataset-card" *ngFor="let document of pageDocuments">
-      <div><span class="pill">{{ document.source_org || 'Sin fuente' }}</span><h2>{{ document.title }}</h2><p>{{ document.author || 'Sin autor' }}</p><small>{{ document.topic || 'Sin tematica' }} · {{ document.year || 'Sin anio' }} · {{ document.document_type || 'Sin tipo' }}</small></div>
+      <div>
+        <span class="pill">{{ document.source_org || 'Sin fuente' }}</span>
+        <h2 class="document-title">{{ document.title | slice: 0 : 350 }}{{ document.title.length > 350 ? '...' : '' }}</h2>
+        <p class="document-authors">{{ (document.author || 'Sin autor') | slice: 0 : 250 }}{{ document.author.length > 250 ? '...' : '' }}</p>
+        <small>{{ document.topic || 'Sin tematica' }} · {{ document.year || 'Sin anio' }} · {{ document.document_type || 'Sin tipo' }}</small>
+        <details class="document-metadata" *ngIf="document.title.length > 350 || document.author.length > 250">
+          <summary>Ver ficha completa</summary>
+          <p>{{ document.title }}</p>
+          <p>{{ document.author || 'Sin autor' }}</p>
+        </details>
+      </div>
       <a class="outline-button" *ngIf="document.source_url" [href]="document.source_url" target="_blank" rel="noopener noreferrer">Fuente</a>
     </article></div>
     <nav class="report-pagination" aria-label="Paginas de documentos" *ngIf="documents.length"><button class="outline-button" type="button" [disabled]="page === 1" (click)="page = page - 1">Anterior</button><span>Pagina {{ page }} de {{ pageCount }}</span><button class="outline-button" type="button" [disabled]="page === pageCount" (click)="page = page + 1">Siguiente</button></nav>

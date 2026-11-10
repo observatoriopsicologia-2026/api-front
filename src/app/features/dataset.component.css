@@ -27,5 +27,9 @@ th:first-child { text-align: left; }
 thead, tfoot { background: #e9f2f8; }
 .matrix-filter { border: 0; padding: 0; background: none; color: #075a8c; text-align: left; text-decoration: underline; cursor: pointer; font: inherit; }
 .report-pagination { display: flex; gap: 20px; justify-content: center; align-items: center; margin-top: 24px; }
+.document-title, .document-authors { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+.document-metadata { margin-top: 14px; }
+.document-metadata summary { color: #075a8c; cursor: pointer; font-size: 14px; font-weight: 600; }
+.document-metadata p { overflow-wrap: anywhere; }
 button:disabled { opacity: .5; cursor: default; }
 @media(max-width: 700px) { .report-filters, .report-grid { grid-template-columns: minmax(0, 1fr); } .report-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } .report-heading { flex-wrap: wrap; } .report-heading h2 { font-size: 24px; } .report-pagination { gap: 10px; font-size: 13px; } }
