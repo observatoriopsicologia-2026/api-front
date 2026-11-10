@@ -5,7 +5,7 @@ Aplicación Angular pública y panel administrador del Observatorio POT.
 ## Instalar
 
 ```bash
-cd frontend
+cd api-front
 npm install
 ```
 
@@ -40,12 +40,30 @@ npm run typecheck
 
 ## Desplegar
 
-Despliega este repositorio en Cloudflare Pages, conectado al repositorio `api-front`.
-Selecciona el preset Angular, rama `main`, directorio raiz del repositorio y Node 24.
+El proyecto `observatorio-pot-ucatolica` de Cloudflare Pages usa Direct Upload.
+Su direccion es https://observatorio-pot-ucatolica.pages.dev y su backend es
+https://observatorio-pot-api-7kc0.onrender.com/api. El backend se despliega desde
+GitHub en Render; el frontend se publica con Wrangler despues de compilar.
+Subir commits a GitHub NO publica automaticamente el frontend.
+
+Para publicar una nueva version desde PowerShell, con Node 24 y Wrangler autorizado
+en la cuenta de Cloudflare del Observatorio:
+
+```powershell
+npm ci --include=dev
+$env:API_URL = 'https://observatorio-pot-api-7kc0.onrender.com/api'
+npm run verify
+npx wrangler@4.159.0 pages deploy dist/observatorio-pot-web/browser --project-name observatorio-pot-ucatolica --branch main
+```
+
+Publicar solo el directorio `browser`, nunca la raiz del repositorio ni `.env`.
 Los archivos `public/_redirects` y `public/_headers` configuran las rutas SPA y
 cabeceras de seguridad. `render.yaml` se conserva como alternativa de hosting.
 
-Build command:
+Para un proyecto nuevo con integracion Git nativa en Pages, usar el preset Angular,
+la rama `main`, el directorio raiz del repositorio, Node 24 y la variable `API_URL`.
+Un proyecto Direct Upload existente no se convierte a integracion Git nativa.
+El comando de compilacion para esa alternativa es:
 
 ```bash
 npm ci --include=dev && npm run build
@@ -57,8 +75,7 @@ Publish directory:
 dist/observatorio-pot-web/browser
 ```
 
-Usa Node 24. Antes de publicar, configura `API_URL` con la URL HTTPS real del
-backend. La URL sugerida actualmente en el ambiente no confirma que exista.
+Antes de publicar, configura `API_URL` con la URL HTTPS real del backend.
 Configura esa misma URL del frontend como `CLIENT_ORIGIN` del backend.
 
 Las credenciales de PostgreSQL, JWT y las claves de R2 solo van en Render para
