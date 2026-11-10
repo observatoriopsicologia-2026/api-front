@@ -1,0 +1,48 @@
+<section class="page-hero compact">
+  <span class="eyebrow">Dataset documental</span>
+  <h1>Observatorio basado en datos</h1>
+  <p>Salud ocupacional, bienestar laboral, salud mental y riesgos psicosociales.</p>
+</section>
+<section class="content-band report-layout" aria-label="Reporte interactivo del dataset">
+  <div class="report-heading"><h2>Reporte interactivo del dataset</h2><button type="button" class="outline-button" (click)="load()" [disabled]="loading">Actualizar</button></div>
+  <p class="state-message" *ngIf="loading" role="status">Cargando dataset...</p>
+  <p class="state-message error" *ngIf="error" role="alert">{{ error }}</p>
+  <ng-container *ngIf="loaded">
+    <form class="report-filters" (ngSubmit)="search()">
+      <label class="search-field"><span>Buscar en el dataset</span><input name="q" [(ngModel)]="q" (ngModelChange)="search()" placeholder="Titulo, autor o tematica"></label>
+      <label><span>Tematica</span><select name="topic" [(ngModel)]="topic" (ngModelChange)="search()"><option value="">Todas</option><option *ngFor="let value of topics" [value]="value">{{ value }}</option></select></label>
+      <fieldset><legend>Origen</legend><label class="check" *ngFor="let source of sources"><input type="checkbox" [name]="'source-' + source" [ngModel]="selectedSources.includes(source)" (ngModelChange)="toggleSource(source, $event)">{{ source }}</label></fieldset>
+      <fieldset class="year-filter"><legend>Rango de anios</legend>
+        <label><span>Desde</span><input name="yearFrom" type="number" [min]="minYear ?? null" [max]="maxYear ?? null" [(ngModel)]="yearFrom" (ngModelChange)="search()"></label>
+        <label><span>Hasta</span><input name="yearTo" type="number" [min]="minYear ?? null" [max]="maxYear ?? null" [(ngModel)]="yearTo" (ngModelChange)="search()"></label>
+        <label class="check undated"><input name="undated" type="checkbox" [(ngModel)]="includeUndated" (ngModelChange)="search()">Incluir sin anio</label>
+      </fieldset>
+      <label><span>Tipo documental</span><select name="documentType" [(ngModel)]="documentType" (ngModelChange)="search()"><option value="">Todos</option><option *ngFor="let value of types" [value]="value">{{ value }}</option></select></label>
+      <div class="filter-actions"><button class="outline-button" type="button" (click)="reset()">Limpiar filtros</button></div>
+    </form>
+    <p *ngIf="yearFrom != null && yearTo != null && yearFrom > yearTo" class="state-message error" role="alert">El anio inicial debe ser menor o igual al final.</p>
+    <div class="report-metrics" aria-live="polite">
+      <div><strong>{{ documents.length }}</strong><span>Documentos de {{ allDocuments.length }}</span></div>
+      <div><strong>{{ matrix.rows.length }}</strong><span>Tematicas</span></div>
+      <div><strong>{{ matrix.columns.length }}</strong><span>Fuentes</span></div>
+      <div><strong>{{ filteredYears }}</strong><span>Anios con documentos</span></div>
+    </div>
+    <p *ngIf="!documents.length" class="state-message" role="status">No hay documentos para los filtros seleccionados.</p>
+    <div class="report-grid" *ngIf="documents.length">
+      <section class="report-panel"><h3>Documentos por tematica y fuente</h3><app-native-chart [data]="topicChart" title="Documentos por tematica y fuente" [horizontal]="true" [stacked]="true" (categorySelected)="selectTopic($event)"></app-native-chart></section>
+      <section class="report-panel"><h3>Documentos por tipo y fuente</h3><app-native-chart [data]="typeChart" title="Documentos por tipo y fuente" [stacked]="true" (categorySelected)="selectType($event)"></app-native-chart></section>
+      <section class="report-panel full"><h3>Documentos por anio</h3><app-native-chart [data]="yearChart" title="Documentos por anio y fuente" [stacked]="true"></app-native-chart></section>
+      <section class="report-panel full"><h3>Tematicas por fuente</h3><div class="matrix-scroll"><table>
+        <thead><tr><th scope="col">Tematica</th><th scope="col" *ngFor="let source of matrix.columns">{{ source }}</th><th scope="col">Total</th></tr></thead>
+        <tbody><tr *ngFor="let row of matrix.rows"><th scope="row"><button type="button" class="matrix-filter" (click)="selectTopic(row.label)">{{ row.label }}</button></th><td *ngFor="let source of matrix.columns">{{ row.values[source] || 0 }}</td><td><strong>{{ row.total }}</strong></td></tr></tbody>
+        <tfoot><tr><th scope="row">Total</th><td *ngFor="let source of matrix.columns">{{ sourceTotal(source) }}</td><td><strong>{{ documents.length }}</strong></td></tr></tfoot>
+      </table></div></section>
+    </div>
+    <div class="report-heading"><h2>Documentos</h2><span>{{ documents.length }} resultados</span></div>
+    <div class="dataset-list"><article class="dataset-card" *ngFor="let document of pageDocuments">
+      <div><span class="pill">{{ document.source_org || 'Sin fuente' }}</span><h2>{{ document.title }}</h2><p>{{ document.author || 'Sin autor' }}</p><small>{{ document.topic || 'Sin tematica' }} · {{ document.year || 'Sin anio' }} · {{ document.document_type || 'Sin tipo' }}</small></div>
+      <a class="outline-button" *ngIf="document.source_url" [href]="document.source_url" target="_blank" rel="noopener noreferrer">Fuente</a>
+    </article></div>
+    <nav class="report-pagination" aria-label="Paginas de documentos" *ngIf="documents.length"><button class="outline-button" type="button" [disabled]="page === 1" (click)="page = page - 1">Anterior</button><span>Pagina {{ page }} de {{ pageCount }}</span><button class="outline-button" type="button" [disabled]="page === pageCount" (click)="page = page + 1">Siguiente</button></nav>
+  </ng-container>
+</section>

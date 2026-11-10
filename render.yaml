@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: observatorio-pot-web
+    runtime: static
+    branch: main
+    rootDir: .
+    buildCommand: npm ci --include=dev && npm run build
+    staticPublishPath: dist/observatorio-pot-web/browser
+    envVars:
+      - key: NODE_VERSION
+        value: '24'
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /index.html
+        name: Cache-Control
+        value: no-cache

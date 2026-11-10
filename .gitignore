@@ -1,6 +1,11 @@
 node_modules/
+/.codex-preview/
 dist/
+.test-dist/
 .angular/
 out-tsc/
 coverage/
 *.log
+.env
+.env.*
+!.env.example

@@ -1,11 +1,16 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.js';
 import {
   ApiItem,
   ApiList,
+  AnalyticsResponse,
   CollectionKey,
+  DatasetAnalyticsResponse,
+  DatasetChartDocument,
+  DatasetDocument,
+  DatasetPivotResponse,
   EventItem,
   LoginResponse,
   NewsItem,
@@ -20,6 +25,7 @@ type CollectionMap = {
   events: EventItem;
   news: NewsItem;
   resources: ResourceItem;
+  dataset: DatasetDocument;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -30,6 +36,30 @@ export class ApiService {
 
   login(email: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, { email, password });
+  }
+
+  getAnalytics(): Observable<AnalyticsResponse> {
+    return this.http.get<AnalyticsResponse>(`${this.apiUrl}/analytics`);
+  }
+
+  getDatasetAnalytics(): Observable<DatasetAnalyticsResponse> {
+    return this.http.get<DatasetAnalyticsResponse>(`${this.apiUrl}/dataset/analytics`);
+  }
+
+  getDatasetChartDocuments(): Observable<DatasetChartDocument[]> {
+    return this.http.get<DatasetChartDocument[]>(`${this.apiUrl}/dataset/documents`);
+  }
+
+  getDataset(q = '', limit = 50, topic = ''): Observable<ApiList<DatasetDocument>> {
+    return this.http.get<ApiList<DatasetDocument>>(`${this.apiUrl}/dataset`, {
+      params: this.params({ q, limit, topic })
+    });
+  }
+
+  getDatasetPivot(row = 'topic', column = 'source_org'): Observable<DatasetPivotResponse> {
+    return this.http.get<DatasetPivotResponse>(`${this.apiUrl}/dataset/pivot`, {
+      params: this.params({ row, column })
+    });
   }
 
   getPublications(q = '', limit = 50): Observable<ApiList<Publication>> {
@@ -44,7 +74,8 @@ export class ApiService {
     limit = 50
   ): Observable<ApiList<CollectionMap[K]>> {
     return this.http.get<ApiList<CollectionMap[K]>>(`${this.apiUrl}/${key}`, {
-      params: this.params({ q, limit })
+      params: this.params({ q, limit }),
+      ...(key === 'dataset' ? { headers: this.authHeaders() } : {})
     });
   }
 

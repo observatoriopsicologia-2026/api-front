@@ -14,6 +14,8 @@ export class AppComponent {
   nav = [
     { label: 'Inicio', path: '/' },
     { label: 'Publicaciones', path: '/publicaciones' },
+    { label: 'Indicadores', path: '/indicadores' },
+    { label: 'Dataset', path: '/dataset' },
     { label: 'Directorio', path: '/directorio' },
     { label: 'Eventos', path: '/eventos' },
     { label: 'Noticias', path: '/noticias' },
@@ -39,4 +41,3 @@ export class AppComponent {
     this.router.navigate(['/publicaciones'], { queryParams: { q } });
   }
 }
-

@@ -1,0 +1,23 @@
+<section class="page-hero compact">
+  <span class="eyebrow">Datos e indicadores</span><h1>Analitica POT</h1>
+  <p>Publicaciones, investigadores, eventos y actividad del observatorio.</p>
+</section>
+<section class="content-band analytics-layout">
+  <div class="section-heading"><h2>Tablero del observatorio</h2><button type="button" class="outline-button" [disabled]="loading" (click)="load()">Actualizar</button></div>
+  <p class="state-message" *ngIf="loading" role="status">Cargando indicadores...</p>
+  <p class="state-message error" *ngIf="error" role="alert">{{ error }}</p>
+  <ng-container *ngIf="analytics as data">
+    <div class="metric-grid">
+      <article class="metric-card"><span>Publicaciones</span><strong>{{ data.summary.publications }}</strong><small>{{ data.summary.publications_with_pdf }} con PDF</small></article>
+      <article class="metric-card"><span>Investigadores</span><strong>{{ data.summary.researchers }}</strong><small>{{ data.summary.countries }} paises registrados</small></article>
+      <article class="metric-card"><span>Eventos</span><strong>{{ data.summary.events }}</strong><small>Agenda academica</small></article>
+      <article class="metric-card"><span>Noticias</span><strong>{{ data.summary.news }}</strong><small>Novedades publicadas</small></article>
+      <article class="metric-card"><span>Recursos</span><strong>{{ data.summary.resources }}</strong><small>Material de apoyo</small></article>
+    </div>
+    <div class="analytics-grid">
+      <article class="chart-panel" *ngFor="let chart of charts"><h3>{{ chart.title }}</h3><app-native-chart [data]="chart.data" [horizontal]="chart.horizontal" [title]="chart.title"></app-native-chart></article>
+      <article class="chart-panel wide" *ngIf="data.latest_publications.length"><h3>Publicaciones recientes</h3><div class="latest-list"><div *ngFor="let item of data.latest_publications"><strong>{{ item.title }}</strong><span>{{ item.authors || 'Sin autor' }} · {{ item.country || 'Sin pais' }} · {{ item.year || 'Sin anio' }}</span></div></div></article>
+    </div>
+    <small class="chart-caption">Ultima actualizacion: {{ data.generated_at | date: 'd MMMM y, h:mm a' }}</small>
+  </ng-container>
+</section>

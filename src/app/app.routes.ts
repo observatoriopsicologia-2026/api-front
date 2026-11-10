@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { AdminDashboardComponent } from './features/admin-dashboard.component';
+import { AnalyticsComponent } from './features/analytics.component';
 import { CollectionPageComponent } from './features/collection-page.component';
+import { DatasetComponent } from './features/dataset.component';
 import { HomeComponent } from './features/home.component';
 import { LoginComponent } from './features/login.component';
 import { PublicationsComponent } from './features/publications.component';
@@ -8,6 +10,8 @@ import { PublicationsComponent } from './features/publications.component';
 export const routes: Routes = [
   { path: '', component: HomeComponent, title: 'Inicio | Observatorio POT' },
   { path: 'publicaciones', component: PublicationsComponent, title: 'Publicaciones | Observatorio POT' },
+  { path: 'indicadores', component: AnalyticsComponent, title: 'Indicadores | Observatorio POT' },
+  { path: 'dataset', component: DatasetComponent, title: 'Dataset | Observatorio POT' },
   {
     path: 'directorio',
     component: CollectionPageComponent,
@@ -52,4 +56,3 @@ export const routes: Routes = [
   { path: 'admin', component: AdminDashboardComponent, title: 'Panel admin | Observatorio POT' },
   { path: '**', redirectTo: '' }
 ];
-

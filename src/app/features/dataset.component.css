@@ -1,0 +1,31 @@
+.report-layout { padding-top: 24px; padding-bottom: 40px; }
+.report-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.report-heading h2 { margin: 0; font-size: 27px; }
+.report-filters { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; padding: 20px 0; border-block: 1px solid #d6e0e7; }
+label { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+label > span, legend { font-weight: 600; font-size: 13px; }
+input:not([type=checkbox]), select { min-height: 42px; width: 100%; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+legend { margin-bottom: 10px; }
+.check { display: inline-flex; flex-direction: row; align-items: center; margin-right: 20px; font-size: 14px; }
+.check input { width: 16px; height: 16px; accent-color: #1276b8; }
+.year-filter { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.undated { grid-column: 1 / -1; }
+.filter-actions { display: flex; align-items: flex-end; gap: 16px; justify-content: flex-end; }
+.report-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; padding: 26px 0; }
+.report-metrics div { display: flex; flex-direction: column; gap: 6px; }
+.report-metrics strong { font-size: 28px; }
+.report-metrics span { font-size: 13px; color: #4f6477; }
+.report-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-bottom: 36px; }
+.report-panel { min-width: 0; padding: 20px 0; border-top: 1px solid #d6e0e7; }
+.report-panel h3 { font-family: inherit; font-size: 18px; margin: 0 0 18px; }
+.full { grid-column: 1 / -1; }
+.matrix-scroll { overflow: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { padding: 12px; border-bottom: 1px solid #d6e0e7; text-align: right; }
+th:first-child { text-align: left; }
+thead, tfoot { background: #e9f2f8; }
+.matrix-filter { border: 0; padding: 0; background: none; color: #075a8c; text-align: left; text-decoration: underline; cursor: pointer; font: inherit; }
+.report-pagination { display: flex; gap: 20px; justify-content: center; align-items: center; margin-top: 24px; }
+button:disabled { opacity: .5; cursor: default; }
+@media(max-width: 700px) { .report-filters, .report-grid { grid-template-columns: minmax(0, 1fr); } .report-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } .report-heading { flex-wrap: wrap; } .report-heading h2 { font-size: 24px; } .report-pagination { gap: 10px; font-size: 13px; } }

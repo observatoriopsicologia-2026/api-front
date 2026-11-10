@@ -23,10 +23,10 @@
       </div>
     </div>
     <div class="stats-panel">
-      <strong>9</strong><span>Países</span>
-      <strong>250+</strong><span>Investigadores</span>
-      <strong>35+</strong><span>Universidades</span>
-      <strong>720+</strong><span>Publicaciones</span>
+      <strong>{{ summary?.countries ?? '-' }}</strong><span>Países</span>
+      <strong>{{ summary?.researchers ?? '-' }}</strong><span>Investigadores</span>
+      <strong>{{ summary?.institutions ?? '-' }}</strong><span>Instituciones</span>
+      <strong>{{ summary?.publications ?? '-' }}</strong><span>Publicaciones</span>
     </div>
   </div>
 </section>
@@ -42,14 +42,11 @@
 
 <section class="content-band centered">
   <h2>Panorama Regional POT</h2>
-  <p>Explora datos sobre la investigación y práctica de la Psicología Organizacional y del Trabajo en Iberoamérica.</p>
-  <div class="bar-chart" aria-label="Distribución de publicaciones académicas por país">
-    <div class="bar-item" *ngFor="let country of countries">
-      <span class="bar" [ngClass]="country.color" [style.height.%]="country.value"></span>
-      <small>{{ country.name }}</small>
-    </div>
-  </div>
-  <small class="chart-caption">Distribución de publicaciones académicas en POT por país.</small>
+  <p>Distribución de las publicaciones registradas en el observatorio.</p>
+  <p class="state-message error" *ngIf="analyticsError" role="alert">{{ analyticsError }}</p>
+  <app-native-chart *ngIf="countryChart.labels?.length" [data]="countryChart" title="Distribucion de publicaciones academicas por pais" [horizontal]="true"></app-native-chart>
+  <p class="empty-state" *ngIf="summary && !countryChart.labels?.length">No hay publicaciones con pais registrado.</p>
+  <small class="chart-caption">Publicaciones del repositorio por país.</small>
 </section>
 
 <section class="content-band" *ngIf="researchers.length">
@@ -87,6 +84,7 @@
       <small>{{ event.location }}</small>
     </article>
   </div>
+  <p class="empty-state" *ngIf="!events.length">No hay eventos disponibles.</p>
 </section>
 
 <section class="content-band">
@@ -97,6 +95,7 @@
     </div>
     <a routerLink="/noticias">Ver todas</a>
   </div>
+  <p class="empty-state" *ngIf="!news.length">No hay noticias disponibles.</p>
   <div class="card-grid">
     <article class="news-card" *ngFor="let item of news">
       <small>{{ item.published_at | date: 'd MMMM y' }}</small>
